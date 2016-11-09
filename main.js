@@ -11,7 +11,6 @@ class App extends React.Component {
   state = {
     ready: false,
     selected: false,
-    paused: true,
   }
 
   async componentWillMount() {
@@ -23,15 +22,6 @@ class App extends React.Component {
     this.setState({selected: !this.state.selected});
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.selected && !this.state.selected) {
-      this.setState({paused: true});
-      this._sound.seek(0);
-    } else if (!prevState.selected && this.state.selected) {
-      this.setState({paused: false});
-    }
-  }
-
   render() {
     if (!this.state.ready) {
       return <Components.AppLoading />;
@@ -39,13 +29,13 @@ class App extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Components.Video
-          source={require('./assets/sounds/sound2.m4a')}
-          ref={sound => { this._sound = sound; }}
-          repeat={true}
-          paused={this.state.paused}
-          style={styles.razorSoundVideo}
-        />
+        { this.state.selected && (
+          <Components.Video
+            source={require('./assets/sounds/sound2.m4a')}
+            repeat={true}
+            style={styles.razorSound}
+          />
+        ) }
 
         <Switch
           value={this.state.selected}
@@ -63,7 +53,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  razorSoundVideo: {
+  razorSound: {
     position: 'absolute',
     top: 0,
     left: 0,
